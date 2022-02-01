@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag conrad302/mediasoup-test:latest
+    - name: Login to Docker
+      run: echo ${{ secrets.DOCKER_CLI_ACCESS_TOKEN }} | docker login -u conrad302 --password-stdin
+    - name: Push image to Docker Hub
+      run: docker push conrad302/mediasoup-test:latest
